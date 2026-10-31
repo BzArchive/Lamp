@@ -41,12 +41,7 @@ import revxrsal.commands.geyser.sender.GeyserCommandPermission;
 import revxrsal.commands.hook.CancelHandle;
 import revxrsal.commands.hook.CommandRegisteredHook;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.StringJoiner;
+import java.util.*;
 
 /**
  * Collects Lamp commands by their root name, and registers each root
@@ -85,7 +80,8 @@ public final class GeyserCommandHooks<A extends GeyserCommandActor> implements C
 
     private @NotNull Command createCommand(@NotNull String name, @NotNull List<ExecutableCommand<A>> commands) {
         Command.Builder<CommandSource> builder = Command.builder(extension)
-                .name(name);
+                .name(name)
+                .source(CommandSource.class);
         commands.stream()
                 .map(ExecutableCommand::description)
                 .filter(Objects::nonNull)
@@ -116,7 +112,9 @@ public final class GeyserCommandHooks<A extends GeyserCommandActor> implements C
 
     private @Nullable String sharedPermission(@NotNull List<ExecutableCommand<A>> commands) {
         List<String> permissions = commands.stream()
-                .map(command -> command.permission() instanceof GeyserCommandPermission(String permission) ? permission : null)
+                .map(command -> command.permission() instanceof GeyserCommandPermission(
+                        String permission
+                ) ? permission : null)
                 .distinct()
                 .toList();
         return permissions.size() == 1 ? permissions.getFirst() : null;
